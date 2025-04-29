@@ -1,0 +1,31 @@
+bool set_difference(struct TSet* aNewSet, const struct TSet* aLeftSet, const struct TSet* aRightSet) {
+    
+    if (aLeftSet == NULL || aRightSet == NULL || aNewSet == NULL) {
+        return true;
+    }
+
+    
+    if (aNewSet->iSize != 0) {
+        return false;
+    }
+
+    set_init(aNewSet);
+
+    
+    struct TSetIterator iter = set_iterator_begin(aLeftSet);
+    for (; set_iterator_is_valid(&iter); set_iterator_to_next(&iter)) {
+        TSetElement element = set_iterator_value(&iter);
+    
+        if (!set_is_element_of(aRightSet, element)) {
+            
+            set_insert(aNewSet, element);
+        }
+    }
+
+    if (set_is_empty(aNewSet)) {
+        set_destroy(aNewSet);
+        return false;
+    }
+
+    return true;
+}

@@ -1,0 +1,59 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "TStack.h"
+
+int main() {
+	struct TStack stack;
+	stack_init(&stack);
+
+	char arr[STACK_MAXCOUNT];
+	scanf("%s", arr);
+
+	//int stringLength = 1337;
+	//for (int i = 0; arr[i] != '\0'; i++)
+		//stringLength = i + 1;
+	//for (int i = 0; i < stringLength; i++) {
+
+	for (int i = 0; i < strlen(arr) - 1; i++) {
+		int is = isalnum(arr[i]);
+		if (is != 0) {
+			char ch = arr[i];
+			TStackElement push = (TStackElement)atoi(&ch);
+			if (!stack_push(&stack, push))
+				return 2;
+		} else {
+			struct TStackIterator it = stack_iterator_begin(&stack);
+			int first = stack_iterator_value(&it);
+			stack_iterator_to_next(&it);
+			int second = stack_iterator_value(&it);
+			switch (arr[i])
+			{
+			case '+':
+				stack_pop(&stack);
+				stack_pop(&stack);
+				stack_push(&stack, second + first);
+				break;
+			case '-':
+				stack_pop(&stack);
+				stack_pop(&stack);
+				stack_push(&stack, second - first);
+				break;
+			case '=':
+				break;
+			}
+		}
+	}
+
+	TStackElement vysledek;
+	if (stack_top(&stack, &vysledek))
+		printf("Vysledek: %d\n", vysledek);
+	else
+		return 1;
+
+	stack_destroy(&stack);
+
+	return 0;
+}
