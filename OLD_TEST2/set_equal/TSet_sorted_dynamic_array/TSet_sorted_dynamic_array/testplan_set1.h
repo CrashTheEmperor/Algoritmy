@@ -17,12 +17,12 @@ TEST_PRINT_MEMORY_STATS
 TEST_REPORT_AFTER
 },
 {
-	TEST_MESSAGE("Vlozeni elementu:")
-		TEST_OPERATION(set_insert)
-		TEST_INPUTS("ahoj", "cau", "kamo", "gama", "alfa")
-		TEST_OUTPUT(1, 1, 1, 1, 1)
-		TEST_PRINT_MEMORY_STATS
-		TEST_REPORT_AFTER
+TEST_MESSAGE("Vlozeni elementu:")
+TEST_OPERATION(set_insert)
+TEST_INPUTS("ahoj", "cau", "kamo", "gama", "alfa")
+TEST_OUTPUT(1, 1, 1, 1, 1)
+TEST_PRINT_MEMORY_STATS
+TEST_REPORT_AFTER
 },
 
 /*

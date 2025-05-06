@@ -1,0 +1,35 @@
+void 	set_init (struct TSet *aSet)
+ 	-Inicializace prázdné množiny.
+ 
+size_t 	set_size (const struct TSet *aSet)
+ 	-Pøeètení poètu elementù množiny.
+ 
+bool 	set_insert (struct TSet *aSet, TSetElement aValue)
+ 	-Vložení elementu do množiny.
+ 
+bool 	set_erase (struct TSet *aSet, TSetElement aValue)
+ 	-Odstranìní elementu z množiny.
+ 
+bool 	set_is_element_of (const struct TSet *aSet, TSetElement aValue)
+ 	-Zjištìní, zda množina obsahuje zadanou hodnotu elementu.
+ 
+struct TSetIterator 	set_find (const struct TSet *aSet, TSetElement aValue)
+ 	-Získání nového iterátoru ukazujícího na první element se zadanou hodnotou v množinì nalezen, pokud byl nalezen.
+ 
+void 	set_destroy (struct TSet *aSet)
+ 	-Deinicializace množiny.
+ 
+struct TSetIterator 	set_iterator_begin (const struct TSet *aSet)
+ 	-Vytvoøení nového iterátoru ukazujícího na první element množiny.
+ 
+bool 	set_iterator_is_valid (const struct TSetIterator *aIter)
+ 	-Zjištìní platnosti iterátoru.
+ 
+bool 	set_iterator_to_next (struct TSetIterator *aIter)
+ 	-Posunutí iterátoru vpøed.
+ 
+TSetElement 	set_iterator_value (const struct TSetIterator *aIter)
+ 	-Pøeètení hodnoty elementu z množiny pomocí iterátoru.
+ 
+bool 	set_iterator_is_equal (const struct TSetIterator *aLeftIter, const struct TSetIterator *aRightIter)
+ 	-Test shodnosti dvou iterátorù
