@@ -1,0 +1,278 @@
+# Data Structures and Algorithms Cheat Sheet
+
+## Common Data Structures
+
+### 1. Stack (TStack)
+
+A stack is a Last-In-First-Out (LIFO) data structure with these main operations:
+
+```c
+struct TStack {
+    size_t iCount;      // Current number of elements
+    size_t iCapacity;   // Total capacity
+    TStackElement* iValues; // Array of elements
+};
+
+// Initialize an empty stack
+void stack_init(struct TStack* aStack);
+
+// Push a value onto the stack
+bool stack_push(struct TStack* aStack, TStackElement aValue);
+
+// Remove the top element from the stack
+bool stack_pop(struct TStack* aStack);
+
+// Get the value at the top without removing it
+bool stack_top(struct TStack* aStack, TStackElement* aValue);
+
+// Check if stack is empty
+bool stack_is_empty(struct TStack* aStack);
+
+// Free memory used by stack
+void stack_destroy(struct TStack* aStack);
+```
+
+Implementation notes:
+- Dynamic resize doubles capacity when full and halves when 1/4 full 
+- Capacity starts at 0 and grows as needed
+- Memory is reallocated with each resize operation
+
+### 2. Queue (TQueue)
+
+A queue is a First-In-First-Out (FIFO) data structure with these operations:
+
+```c
+struct TQueue {
+    TQueueElement* iValues;  // Circular buffer
+    size_t iFrontPos;        // Front position
+    size_t iBackPos;         // Back position
+};
+
+// Initialize an empty queue
+void queue_init(struct TQueue* aQueue);
+
+// Add a value to the back of the queue
+bool queue_push(struct TQueue* aQueue, TQueueElement aValue);
+
+// Remove the front element from the queue
+bool queue_pop(struct TQueue* aQueue);
+
+// Get value at the front without removing it
+bool queue_front(struct TQueue* aQueue, TQueueElement* aValue);
+
+// Get value at the back without removing it
+bool queue_back(struct TQueue* aQueue, TQueueElement* aValue);
+
+// Add value to the front of the queue (custom extension)
+bool queue_push_front(struct TQueue* aQueue, TQueueElement aValue);
+
+// Remove value from the back of the queue (custom extension)
+bool queue_pop_back(struct TQueue* aQueue);
+
+// Free memory used by queue
+void queue_destroy(struct TQueue* aQueue);
+```
+
+Implementation notes:
+- Uses a circular buffer with fixed capacity (QUEUE_MAXCOUNT)
+- iFrontPos points to the first element
+- iBackPos points to the last element
+- Special handling for wrap-around at array boundaries
+
+### 3. Set (TSet)
+
+A set is a collection of unique elements with these operations:
+
+```c
+struct TSet {
+    size_t iSize;                       // Number of elements
+    struct TSetSortedFlexArray* iFlexArray; // Internal sorted array
+};
+
+// Initialize an empty set
+void set_init(struct TSet* aSet);
+
+// Get number of elements in the set
+size_t set_size(const struct TSet* aSet);
+
+// Check if the set is empty
+bool set_is_empty(const struct TSet* aSet);
+
+// Add an element to the set (if not already present)
+bool set_insert(struct TSet* aSet, TSetElement aValue);
+
+// Remove an element from the set
+bool set_erase(struct TSet* aSet, TSetElement aValue);
+
+// Check if an element is in the set
+bool set_is_element_of(const struct TSet* aSet, TSetElement aValue);
+
+// Find an element in the set and return iterator to it
+struct TSetIterator set_find(const struct TSet* aSet, TSetElement aValue);
+
+// Compare two sets for equality
+bool set_equal(struct TSet* aLeft, struct TSet* aRight);
+
+// Create a set with elements in aLeftSet but not in aRightSet
+bool set_difference(struct TSet* aNewSet, const struct TSet* aLeftSet, const struct TSet* aRightSet);
+
+// Create a set with elements common to both input sets
+bool set_intersection(struct TSet* aNewSet, const struct TSet* aSetA, const struct TSet* aSetB);
+
+// Free memory used by set
+void set_destroy(struct TSet* aSet);
+```
+
+Implementation notes:
+- Uses a sorted dynamic array for efficient lookup
+- Elements are maintained in sorted order
+- Can use either linear or binary search (configured via FLEX_ARRAY_SEARCH_VARIANT)
+- Memory is reallocated when needed with amortized growth
+- set_equal compares sets for equality using element-wise comparison
+
+## Vector and Sorting Algorithms (TVector)
+
+### 1. Vector Structure
+
+```c
+struct TVector {
+    TVectorElement* iValues;            // Array of elements
+    size_t iSize;                       // Number of elements
+    struct TVectorSortStats iStats;     // Sorting statistics
+};
+
+struct TVectorSortStats {
+    size_t iComparisons;    // Element comparisons
+    size_t iSwaps;          // Element swaps
+    size_t iMoves;          // Element moves
+    size_t iGets;           // Element reads
+    size_t iSets;           // Element writes
+};
+```
+
+### 2. Sorting Algorithms
+
+```c
+// Simple insertion sort - O(n²) time complexity
+void insert_sort(struct TVector* aVector);
+
+// Selection sort - O(n²) time complexity
+void select_sort(struct TVector* aVector);
+
+// Basic bubble sort - O(n²) time complexity
+void bubble_sort(struct TVector* aVector);
+
+// Bubble sort with early termination optimization
+void bubble_sort_optimized(struct TVector* aVector);
+
+// Bubble sort with last swap position optimization
+void bubble_sort_optimized2(struct TVector* aVector);
+
+// Bidirectional bubble sort (cocktail shaker sort)
+void shaker_sort(struct TVector* aVector);
+```
+
+Sorting algorithm characteristics:
+- **insert_sort**: Stable, adaptive, efficient for small or nearly sorted data
+- **select_sort**: Not stable, not adaptive, simple implementation
+- **bubble_sort**: Stable, adaptive (optimized versions), poor performance on large data
+- **bubble_sort_optimized**: Adds early termination when no swaps occur
+- **bubble_sort_optimized2**: Tracks last swap position to reduce comparisons
+- **shaker_sort**: Bidirectional, more efficient than basic bubble sort
+
+## Testing Framework 
+
+### 1. Test Bench Structure
+
+```c
+struct TTestPlan {
+    struct TTestOperation iOperation;    // Function to test
+    struct TTestInputs iInputs;          // Test input values
+    struct TTestOutput iOutput;          // Expected output values
+    const char* iMessage;                // Test description
+    bool iListOperations;                // Print operations before testing
+    bool iReportBefore;                  // Print data structure before test
+    bool iReportAfter;                   // Print data structure after test
+    bool iMemoryStats;                   // Print memory statistics
+};
+```
+
+### 2. Creating Tests
+
+```c
+// Define a test plan array
+const struct TTestPlan testplan[] = {
+    {
+        TEST_MESSAGE("Test description")
+        TEST_OPERATION(function_name)
+        TEST_INPUTS(value1, value2, value3)
+        TEST_OUTPUT(expected1, expected2, expected3)
+        TEST_REPORT_AFTER
+        TEST_PRINT_MEMORY_STATS
+    },
+    // More tests...
+};
+
+// Run the tests
+if (!testbench_run(&my_structure, ITEMS_OF(testplan), testplan)) {
+    puts("testplan failed!!!");
+    return 1;
+}
+```
+
+### 3. Memory Tracking
+
+```c
+// Memory allocation statistics
+unsigned get_alloc_count(void);         // Number of allocations
+unsigned get_realloc_count(void);       // Number of reallocations
+unsigned get_dealloc_count(void);       // Number of deallocations
+size_t get_alloc_actual_size(void);     // Current allocated memory
+size_t get_alloc_total_size(void);      // Total memory ever allocated
+size_t get_dealloc_total_size(void);    // Total memory ever deallocated
+```
+
+## Iterator Pattern
+
+Each data structure implements iterators for traversal:
+
+```c
+// Creating iterators
+struct TStackIterator stack_iterator_begin(const struct TStack* aStack);
+struct TQueueIterator queue_iterator_begin(const struct TQueue* aQueue);
+struct TSetIterator set_iterator_begin(const struct TSet* aSet);
+struct TVectorIterator vector_iterator_begin(const struct TVector* aVector);
+
+// Checking iterator validity
+bool stack_iterator_is_valid(const struct TStackIterator* aIter);
+bool queue_iterator_is_valid(const struct TQueueIterator* aIter);
+bool set_iterator_is_valid(const struct TSetIterator* aIter);
+bool vector_iterator_is_valid(const struct TVectorIterator* aIter);
+
+// Moving to next element
+bool stack_iterator_to_next(struct TStackIterator* aIter);
+bool queue_iterator_to_next(struct TQueueIterator* aIter);
+bool set_iterator_to_next(struct TSetIterator* aIter);
+bool vector_iterator_to_next(struct TVectorIterator* aIter);
+
+// Getting values
+TStackElement stack_iterator_value(const struct TStackIterator* aIter);
+TQueueElement queue_iterator_value(const struct TQueueIterator* aIter);
+TSetElement set_iterator_value(const struct TSetIterator* aIter);
+TVectorElement vector_iterator_value(const struct TVectorIterator* aIter);
+```
+
+## Common Helper Functions
+
+```c
+// Iterator-based traversal of the entire structure
+void set_for_each(struct TSetIterator it, void (*fn)(const struct TSetIterator*));
+void vector_for_each(struct TVectorIterator it, void (*fn)(const struct TVectorIterator*));
+
+// Print the value using an iterator
+void print_value_by_iterator(const TTestedADTIterator* aIter);
+
+// Process N elements
+struct TVectorIterator vector_for_n(struct TVectorIterator it, size_t n, 
+                                    void (*fn)(const struct TVectorIterator*));
+```
